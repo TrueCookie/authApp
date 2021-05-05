@@ -1,4 +1,4 @@
 package user;
 
-public class AuthUser {
+public class AuthUser  extends User{
 }
