@@ -7,13 +7,13 @@ import java.util.*;
 
 public class UsersManager {
 
-    private final Map<String, String> creds = new HashMap<>();
-
-    public UsersManager(){
+    private static Map<String, String> creds;
+    static {
+        creds = new HashMap<>();
         mapData();
     }
 
-    public void mapData() {
+    public static void mapData() {
         try(BufferedReader br = new BufferedReader(new FileReader(DataHelper.CREDS))) {
             for (Object cell : br.lines().toArray())
             {
@@ -25,6 +25,14 @@ public class UsersManager {
 
                 creds.put(name, password);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void register(String name, String password){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(DataHelper.CREDS))){
+            bw.write(name + ' ' + password + System.getProperty("line.separator"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,8 +52,8 @@ public class UsersManager {
     }
 
     public boolean isAdmin(String name) {
-        try(BufferedReader br = new BufferedReader(new FileReader(DataHelper.BLOCKED))){
-            return br.lines().anyMatch(line -> line.equals(name));
+        try(BufferedReader br = new BufferedReader(new FileReader(DataHelper.ADMINS))){
+            return br.lines().anyMatch(line -> line.trim().equals(name));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,25 +84,48 @@ public class UsersManager {
         File inputFile = new File(path);    //path = DataHelper.BLOCKED
         File tmpFile = new File("tmp.txt");
 
-        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-        BufferedWriter writer = new BufferedWriter(new FileWriter(tmpFile));
+        BufferedReader fileReader = new BufferedReader(new FileReader(inputFile));
+        BufferedWriter fileWriter = new BufferedWriter(new FileWriter(tmpFile));
 
         String currentLine;
-        while ((currentLine = reader.readLine()) != null){
+        while ((currentLine = fileReader.readLine()) != null){
             String trimmedLine = currentLine.trim();
             if(trimmedLine.equals(line)) continue;
-            writer.write(currentLine + System.getProperty("line.separator"));
+            fileWriter.write(currentLine + System.getProperty("line.separator"));
         }
-        reader.close();
-        writer.close();
+        fileReader.close();
+        fileWriter.close();
         boolean successful = tmpFile.renameTo(inputFile);
-    }
-
-    public boolean isPasswordValid(String password) {
-        return true;//todo: check password
     }
 
     public boolean isNameValid(String name) {
         return true;
+    }
+
+    public void delete(String name) {
+        try(BufferedReader br = new BufferedReader(new FileReader(DataHelper.CREDS))){
+            String credsLine = br.lines().filter(line -> line.startsWith(name)).findFirst().orElse(null);
+            removeLine(DataHelper.CREDS, credsLine);
+            dismiss(name);
+            unblock(name);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void appoint(String name) {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(DataHelper.ADMINS))){
+            writer.write(name + System.getProperty("line.separator"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dismiss(String name) {
+        try {
+            removeLine(DataHelper.ADMINS, name);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

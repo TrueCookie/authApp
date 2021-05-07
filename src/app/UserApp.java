@@ -1,22 +1,31 @@
 package app;
 
+import credentials.*;
+
 import java.io.*;
 
 public class UserApp implements App {
 
     @Override
-    public void start() {
-        System.out.println("Type '-exit' to exit");
+    public void start(UsersManager usersManager) {
+        System.out.println("USER MODE ACTIVATED");
         System.out.println("Type '-h' for help");
 
         String input = null;
         do{
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             try {
-                input = reader.readLine();
+                input = DataHelper.reader.readLine();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }while (!input.equals("-exit"));
+    }
+
+    @Override
+    public void help() {
+        System.out.println("""
+                Commands:
+                    HELP: "-h"
+                    EXIT: "-exit" """);
     }
 }

@@ -1,5 +1,8 @@
 package app;
 
+import credentials.*;
+
 public interface App {
-    void start();
+    void start(UsersManager usersManager);
+    void help();
 }

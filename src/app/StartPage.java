@@ -17,9 +17,8 @@ public class StartPage {
         String input = "";
         do{
             //input = System.console().readLine();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            try {
-                input = reader.readLine();
+            try{
+                input = DataHelper.reader.readLine();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -36,22 +35,40 @@ public class StartPage {
     }
 
     public static void signIn() {
-        String name;
-        boolean nameIsCorrect = false;
-        while (!nameIsCorrect){
-            System.out.print("name: ");
-            name = System.console().readLine();
-            nameIsCorrect = usersManager.isNameValid(name);
+        String name = null;                    //username
+        boolean nameIsValid = false;
+        while (!nameIsValid){
+            System.out.print("Type your name: ");
+            //name = System.console().readLine();
+            try {
+                name = DataHelper.reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            nameIsValid = usersManager.isNameValid(name);
 
-            if(!nameIsCorrect) System.out.print("Name is invalid\n Make sure your new name does not containts spaces or special symbols");
+            if(!nameIsValid) System.out.print("Name is invalid\n Make sure your new name does not contains spaces or special symbols");
         }
-        //pw check
-        boolean passwordIsValid = false;
 
+        String password = null;
+        boolean passwordIsValid = false;        //password
         while (!passwordIsValid){
-            String password = String.valueOf(System.console().readPassword());
-            passwordIsValid = usersManager.isPasswordValid(password);
+            System.out.print("Type your password: ");
+            //password = String.valueOf(System.console().readPassword());
+            //BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            try {
+                password = DataHelper.reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            passwordIsValid = PasswordValidator.isPasswordValid(password);
+            if(!passwordIsValid){
+                System.out.print("Password is invalid\n Make sure your new name does not contains spaces or special symbols");
+            }
         }
+
+        usersManager.register(name, password);  //registration
+
         System.out.println("YOU JUST REGISTERED");
 
         logIn();
@@ -60,37 +77,37 @@ public class StartPage {
     public static void logIn() {
         System.out.println("LOG IN");
 
-        String name = null;
+        String name = null;                     //name
         boolean nameIsCorrect = false;
         while (!nameIsCorrect){
             System.out.print("name: ");
             //name = System.console().readLine();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            try {
-                name = reader.readLine();
+            try{
+                name = DataHelper.reader.readLine();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             nameIsCorrect = usersManager.isRegistered(name);
 
-            if(!nameIsCorrect) System.out.print("There is no such account");
+            if(!nameIsCorrect) System.out.print("There is no such account\n");
         }
 
-        int failCount = 0;
+        int failCount = 0;                      //password
         boolean passwordIsCorrect = false;
 
-        while (!passwordIsCorrect && failCount < 3){
+        while (!passwordIsCorrect){
             System.out.print("password: ");
-            String password = null;    //String password = String.valueOf(System.console().readPassword());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+            //String password = String.valueOf(System.console().readPassword());    //todo: uncomment before deploy
+            String password = null;
             try {
-                password = reader.readLine();
+                password = DataHelper.reader.readLine();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             passwordIsCorrect = usersManager.isPasswordCorrect(name, password);
 
-            if(!passwordIsCorrect){
+            if(!passwordIsCorrect){     //todo: save fail attempt to log
                 System.out.println("Password is incorrect");
                 failCount++;
                 System.out.println("Attempts left: " + (3 - failCount));
@@ -102,7 +119,7 @@ public class StartPage {
             }
         }
 
-        startApp(name);
+        startApp(name);     //todo: save to log
     }
 
     private static void startApp(String userName) {
@@ -116,7 +133,11 @@ public class StartPage {
             app = new UserApp();
         }
 
-        app.start();
-
+        app.start(usersManager);
+        try {
+            DataHelper.reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
