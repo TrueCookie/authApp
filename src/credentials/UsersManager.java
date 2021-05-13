@@ -21,7 +21,10 @@ public class UsersManager {
                 int space = line.indexOf(' ');
 
                 String name = line.substring(0, space);
-                String password = line.substring(space+1);
+                String password = String.valueOf(System.console().readPassword());
+                //String encodedPW = line.substring(space+1);
+                //byte[] decodedPW = Base64.getDecoder().decode(encodedPW);
+                //String password = Arrays.toString(decodedPW);
 
                 creds.put(name, password);
             }
@@ -32,6 +35,7 @@ public class UsersManager {
 
     public void register(String name, String password){
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(DataHelper.CREDS))){
+            //byte[] encodedPW = Base64.getEncoder().encode(password.getBytes());
             bw.write(name + ' ' + password + System.getProperty("line.separator"));
         } catch (IOException e) {
             e.printStackTrace();

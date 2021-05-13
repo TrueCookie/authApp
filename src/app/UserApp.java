@@ -23,9 +23,9 @@ public class UserApp implements App {
 
     @Override
     public void help() {
-        System.out.println("""
-                Commands:
-                    HELP: "-h"
-                    EXIT: "-exit" """);
+        System.out.println(
+                "Commands:\n" +
+                    "HELP: -h\n" +
+                    "EXIT: -exit\n");
     }
 }

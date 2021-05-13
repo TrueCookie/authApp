@@ -9,5 +9,5 @@ public class DataHelper {
     public static final String BLOCKED = "data/blockedUsers.txt";
     public static final String ADMINS = "data/admins";
     public static final String PWCONFIG = "data/pwconfig.txt";
-
+    public static final String LOGS = "data/logs.txt";
 }

@@ -2,7 +2,7 @@ package app;
 
 public class Cmds {
     public static final String LOG_IN_CMD = "-login";
-    public static final String SIGN_IN_CMD = "-signin";
+    public static final String SIGN_UP_CMD = "-signup";
 
     public static final String BLOCK_CMD = "-b";
     public static final String UNBLOCK_CMD = "-u";

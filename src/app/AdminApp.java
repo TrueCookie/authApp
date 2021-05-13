@@ -39,15 +39,15 @@ public class AdminApp implements App{
 
     @Override
     public void help() {
-        System.out.println("""
-                Commands:
-                    BLOCK: "-b"
-                    UNBLOCK: "-u"
-                    DELETE: "-d"
-                    APPOINT_ADMIN: "-aa"
-                    DISMISS_ADMIN: "-da"
-                    HELP: "-h"
-                    EXIT: "-exit" """);
+        System.out.println(
+                "Commands:\n" +
+                    "BLOCK: -b\n" +
+                    "UNBLOCK: -u\n" +
+                    "DELETE: -d\n" +
+                    "APPOINT_ADMIN: -aa\n" +
+                    "DISMISS_ADMIN: -da\n" +
+                    "HELP: -h\n" +
+                    "EXIT: -exit\n");
     }
 
     String getUserFromCmd(String input){
